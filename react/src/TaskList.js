@@ -1,17 +1,25 @@
 import React from 'react';
 
-const TaskList = ({ tasks, onTaskSelect }) => {
-    return (
-        <ul>
-            {tasks.map(task => (
-                <li key={task.id}>
-                    <strong>{task.title}</strong>
-                    {}
-                    <button onClick={() => onTaskSelect(task.id)}>View Details</button>
-                </li>
-            ))}
-        </ul>
-    );
+const TaskList = props => {
+  return (
+    <ul>
+      {}
+      {props.tasks.map(task => (
+        <li key={task.id} style={{ marginBottom: "10px" }}>
+          
+          <span style={{ fontWeight: props.selectedTaskId === task.id ? "bold" : "normal" }}>
+            {task.title}
+          </span>
+          <button 
+            onClick={() => props.onTaskSelect(task.id)} 
+            style={{ marginLeft: "10px" }}
+          >
+            Details & Select
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
 };
 
 export default TaskList;

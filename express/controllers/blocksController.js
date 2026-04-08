@@ -2,7 +2,13 @@ import * as blocksModel from "../models/blocksModel.js";
 
 export const getDailySchedule = (req, res) => {
     const { date } = req.query;
-    const blocks = blocksModel.findBlocksByDate(date);
+    
+    let blocks = blocksModel.findBlocksByDate(date);
+    
+    if (blocks.length === 0) {
+        blocksModel.createDailyBlocks(date);
+        blocks = blocksModel.findBlocksByDate(date);
+    }
     
     const blocksWithLinks = blocks.map(b => ({
         ...b,

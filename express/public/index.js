@@ -16880,28 +16880,42 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _taskForm = require("./TaskForm");
-var _taskFormDefault = parcelHelpers.interopDefault(_taskForm);
 var _taskList = require("./TaskList");
 var _taskListDefault = parcelHelpers.interopDefault(_taskList);
+var _taskForm = require("./TaskForm");
+var _taskFormDefault = parcelHelpers.interopDefault(_taskForm);
 var _schedule = require("./Schedule");
 var _scheduleDefault = parcelHelpers.interopDefault(_schedule);
 const App = ()=>{
     const [tasks, setTasks] = (0, _react.useState)([]);
     const [blocks, setBlocks] = (0, _react.useState)([]);
-    const [loading, setLoading] = (0, _react.useState)(true);
+    const [detailedTask, setDetailedTask] = (0, _react.useState)(null);
+    const [selectedTaskId, setSelectedTaskId] = (0, _react.useState)(null);
     const [date, setDate] = (0, _react.useState)("2026-04-07");
+    const [loading, setLoading] = (0, _react.useState)(true);
     const fetchTasks = ()=>{
-        setLoading(true);
-        fetch("/api/v1/tasks").then((res)=>res.json()).then((data)=>{
-            setTasks(data);
-            setLoading(false);
-        });
+        fetch("/api/v1/tasks").then((res)=>res.json()).then((data)=>setTasks(data.tasks || data));
     };
     const fetchSchedule = ()=>{
+        setLoading(true);
         fetch(`/api/v1/time-blocks?date=${date}`).then((res)=>res.json()).then((data)=>{
             setBlocks(data.time_blocks || []);
             setLoading(false);
+        });
+    };
+    const handleTaskSelect = (id)=>{
+        setSelectedTaskId(id);
+        fetch(`/api/v1/tasks/${id}`).then((res)=>{
+            if (!res.ok) throw new Error("something went wrong: " + res.status);
+            return res.json();
+        }).then((data)=>{
+            // データを取り出す
+            let taskData = data.task || data;
+            if (taskData.length > 0 && taskData !== undefined) taskData = taskData[0];
+            setDetailedTask(taskData);
+        }).catch((error)=>{
+            console.log(error);
+            alert("Task not found");
         });
     };
     (0, _react.useEffect)(()=>{
@@ -16919,13 +16933,136 @@ const App = ()=>{
                 children: "TimeBlock Tasks"
             }, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 38,
-                columnNumber: 13
+                lineNumber: 63,
+                columnNumber: 7
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                style: {
+                    marginBottom: "20px"
+                },
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                        children: "Select Date: "
+                    }, void 0, false, {
+                        fileName: "src/App.js",
+                        lineNumber: 66,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                        type: "date",
+                        value: date,
+                        onChange: (e)=>setDate(e.target.value)
+                    }, void 0, false, {
+                        fileName: "src/App.js",
+                        lineNumber: 67,
+                        columnNumber: 9
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/App.js",
+                lineNumber: 65,
+                columnNumber: 7
+            }, undefined),
+            detailedTask && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                style: {
+                    border: "2px solid blue",
+                    padding: "10px",
+                    marginBottom: "20px"
+                },
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
+                        children: "Task Detail"
+                    }, void 0, false, {
+                        fileName: "src/App.js",
+                        lineNumber: 77,
+                        columnNumber: 11
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
+                                children: "Title:"
+                            }, void 0, false, {
+                                fileName: "src/App.js",
+                                lineNumber: 78,
+                                columnNumber: 14
+                            }, undefined),
+                            " ",
+                            detailedTask.title
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/App.js",
+                        lineNumber: 78,
+                        columnNumber: 11
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
+                                children: "Status:"
+                            }, void 0, false, {
+                                fileName: "src/App.js",
+                                lineNumber: 79,
+                                columnNumber: 14
+                            }, undefined),
+                            " ",
+                            detailedTask.status
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/App.js",
+                        lineNumber: 79,
+                        columnNumber: 11
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
+                                children: "Priority:"
+                            }, void 0, false, {
+                                fileName: "src/App.js",
+                                lineNumber: 80,
+                                columnNumber: 14
+                            }, undefined),
+                            " ",
+                            detailedTask.priority
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/App.js",
+                        lineNumber: 80,
+                        columnNumber: 11
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
+                                children: "Est. Minutes:"
+                            }, void 0, false, {
+                                fileName: "src/App.js",
+                                lineNumber: 81,
+                                columnNumber: 14
+                            }, undefined),
+                            " ",
+                            detailedTask.est_minutes
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/App.js",
+                        lineNumber: 81,
+                        columnNumber: 11
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                        onClick: ()=>setDetailedTask(null),
+                        children: "Close Detail"
+                    }, void 0, false, {
+                        fileName: "src/App.js",
+                        lineNumber: 82,
+                        columnNumber: 11
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/App.js",
+                lineNumber: 76,
+                columnNumber: 9
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 style: {
                     display: "flex",
-                    gap: "40px"
+                    gap: "20px"
                 },
                 children: [
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -16934,52 +17071,69 @@ const App = ()=>{
                         },
                         children: [
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
-                                children: "My Tasks"
+                                children: "Tasks"
                             }, void 0, false, {
                                 fileName: "src/App.js",
-                                lineNumber: 42,
-                                columnNumber: 21
+                                lineNumber: 88,
+                                columnNumber: 11
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _taskListDefault.default), {
                                 tasks: tasks,
-                                onTaskSelect: (id)=>console.log(id)
+                                onTaskSelect: handleTaskSelect,
+                                selectedTaskId: selectedTaskId
                             }, void 0, false, {
                                 fileName: "src/App.js",
-                                lineNumber: 43,
-                                columnNumber: 21
+                                lineNumber: 89,
+                                columnNumber: 11
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("hr", {}, void 0, false, {
+                                fileName: "src/App.js",
+                                lineNumber: 90,
+                                columnNumber: 11
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _taskFormDefault.default), {
                                 onTaskAdded: fetchTasks
                             }, void 0, false, {
                                 fileName: "src/App.js",
-                                lineNumber: 44,
-                                columnNumber: 21
+                                lineNumber: 91,
+                                columnNumber: 11
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/App.js",
-                        lineNumber: 41,
-                        columnNumber: 17
+                        lineNumber: 87,
+                        columnNumber: 9
                     }, undefined),
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _scheduleDefault.default), {
-                        blocks: blocks,
-                        date: date
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        style: {
+                            flex: 1
+                        },
+                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _scheduleDefault.default), {
+                            blocks: blocks,
+                            date: date,
+                            selectedTaskId: selectedTaskId,
+                            onAssignSuccess: fetchSchedule
+                        }, void 0, false, {
+                            fileName: "src/App.js",
+                            lineNumber: 95,
+                            columnNumber: 11
+                        }, undefined)
                     }, void 0, false, {
                         fileName: "src/App.js",
-                        lineNumber: 48,
-                        columnNumber: 17
+                        lineNumber: 94,
+                        columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/App.js",
-                lineNumber: 39,
-                columnNumber: 13
+                lineNumber: 86,
+                columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/App.js",
-        lineNumber: 37,
-        columnNumber: 9
+        lineNumber: 62,
+        columnNumber: 5
     }, undefined);
 };
 exports.default = App;
@@ -17020,7 +17174,7 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-const TaskForm = ({ onTaskAdded })=>{
+const TaskForm = (props)=>{
     const [title, setTitle] = (0, _react.useState)("");
     const [estMinutes, setEstMinutes] = (0, _react.useState)(30);
     const [priority, setPriority] = (0, _react.useState)(2);
@@ -17038,13 +17192,23 @@ const TaskForm = ({ onTaskAdded })=>{
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(newTask)
-        }).then((res)=>res.json()).then((data)=>{
+        }).then((res)=>{
+            if (!res.ok && res.status !== 422) throw new Error("something went wrong: " + res.status);
+            return res.json();
+        }).then((data)=>{
             if (data.status === 201) {
                 setMessage("Success: Task created!");
                 setTitle("");
-                onTaskAdded();
-            } else setMessage("Error: " + (data.errors ? data.errors.message : "Failed"));
-        }).catch((err)=>setMessage("Error connecting to API"));
+                props.onTaskAdded();
+            } else {
+                let errMsg = "Failed";
+                if (data.errors && data.errors.length > 0) errMsg = data.errors.message;
+                setMessage("Error: " + errMsg);
+            }
+        }).catch((err)=>{
+            console.log(err);
+            setMessage("Error connecting to API");
+        });
     };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
         onSubmit: handleSubmit,
@@ -17058,29 +17222,29 @@ const TaskForm = ({ onTaskAdded })=>{
                 children: "Add New Task"
             }, void 0, false, {
                 fileName: "src/TaskForm.js",
-                lineNumber: 34,
+                lineNumber: 46,
                 columnNumber: 13
             }, undefined),
-            message && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+            message ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
                 children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
                     children: message
                 }, void 0, false, {
                     fileName: "src/TaskForm.js",
-                    lineNumber: 35,
-                    columnNumber: 28
+                    lineNumber: 49,
+                    columnNumber: 27
                 }, undefined)
             }, void 0, false, {
                 fileName: "src/TaskForm.js",
-                lineNumber: 35,
-                columnNumber: 25
-            }, undefined),
+                lineNumber: 49,
+                columnNumber: 24
+            }, undefined) : "",
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 children: [
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
                         children: "Title: "
                     }, void 0, false, {
                         fileName: "src/TaskForm.js",
-                        lineNumber: 37,
+                        lineNumber: 52,
                         columnNumber: 17
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -17090,13 +17254,13 @@ const TaskForm = ({ onTaskAdded })=>{
                         required: true
                     }, void 0, false, {
                         fileName: "src/TaskForm.js",
-                        lineNumber: 38,
+                        lineNumber: 53,
                         columnNumber: 17
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/TaskForm.js",
-                lineNumber: 36,
+                lineNumber: 51,
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17105,7 +17269,7 @@ const TaskForm = ({ onTaskAdded })=>{
                         children: "Est. Minutes: "
                     }, void 0, false, {
                         fileName: "src/TaskForm.js",
-                        lineNumber: 46,
+                        lineNumber: 61,
                         columnNumber: 17
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -17114,13 +17278,13 @@ const TaskForm = ({ onTaskAdded })=>{
                         onChange: (e)=>setEstMinutes(Number(e.target.value))
                     }, void 0, false, {
                         fileName: "src/TaskForm.js",
-                        lineNumber: 47,
+                        lineNumber: 62,
                         columnNumber: 17
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/TaskForm.js",
-                lineNumber: 45,
+                lineNumber: 60,
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17129,7 +17293,7 @@ const TaskForm = ({ onTaskAdded })=>{
                         children: "Priority: "
                     }, void 0, false, {
                         fileName: "src/TaskForm.js",
-                        lineNumber: 54,
+                        lineNumber: 69,
                         columnNumber: 17
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
@@ -17141,7 +17305,7 @@ const TaskForm = ({ onTaskAdded })=>{
                                 children: "1 (High)"
                             }, void 0, false, {
                                 fileName: "src/TaskForm.js",
-                                lineNumber: 56,
+                                lineNumber: 71,
                                 columnNumber: 21
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -17149,7 +17313,7 @@ const TaskForm = ({ onTaskAdded })=>{
                                 children: "2 (Normal)"
                             }, void 0, false, {
                                 fileName: "src/TaskForm.js",
-                                lineNumber: 57,
+                                lineNumber: 72,
                                 columnNumber: 21
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -17157,19 +17321,19 @@ const TaskForm = ({ onTaskAdded })=>{
                                 children: "3 (Low)"
                             }, void 0, false, {
                                 fileName: "src/TaskForm.js",
-                                lineNumber: 58,
+                                lineNumber: 73,
                                 columnNumber: 21
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/TaskForm.js",
-                        lineNumber: 55,
+                        lineNumber: 70,
                         columnNumber: 17
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/TaskForm.js",
-                lineNumber: 53,
+                lineNumber: 68,
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -17177,13 +17341,13 @@ const TaskForm = ({ onTaskAdded })=>{
                 children: "Create Task"
             }, void 0, false, {
                 fileName: "src/TaskForm.js",
-                lineNumber: 61,
+                lineNumber: 76,
                 columnNumber: 13
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/TaskForm.js",
-        lineNumber: 33,
+        lineNumber: 45,
         columnNumber: 9
     }, undefined);
 };
@@ -17195,35 +17359,44 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-const TaskList = ({ tasks, onTaskSelect })=>{
+const TaskList = (props)=>{
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("ul", {
-        children: tasks.map((task)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
+        children: props.tasks.map((task)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
+                style: {
+                    marginBottom: "10px"
+                },
                 children: [
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                        style: {
+                            fontWeight: props.selectedTaskId === task.id ? "bold" : "normal"
+                        },
                         children: task.title
                     }, void 0, false, {
                         fileName: "src/TaskList.js",
-                        lineNumber: 8,
-                        columnNumber: 21
+                        lineNumber: 10,
+                        columnNumber: 11
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                        onClick: ()=>onTaskSelect(task.id),
-                        children: "View Details"
+                        onClick: ()=>props.onTaskSelect(task.id),
+                        style: {
+                            marginLeft: "10px"
+                        },
+                        children: "Details & Select"
                     }, void 0, false, {
                         fileName: "src/TaskList.js",
-                        lineNumber: 10,
-                        columnNumber: 21
+                        lineNumber: 13,
+                        columnNumber: 11
                     }, undefined)
                 ]
             }, task.id, true, {
                 fileName: "src/TaskList.js",
-                lineNumber: 7,
-                columnNumber: 17
+                lineNumber: 8,
+                columnNumber: 9
             }, undefined))
     }, void 0, false, {
         fileName: "src/TaskList.js",
         lineNumber: 5,
-        columnNumber: 9
+        columnNumber: 5
     }, undefined);
 };
 exports.default = TaskList;
@@ -17234,70 +17407,133 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-const Schedule = ({ blocks, tasks, onAssignSuccess })=>{
+const Schedule = (props)=>{
+    const formatTime = (totalMinutes)=>{
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        const formattedHours = hours < 10 ? "0" + hours : hours;
+        const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+        return `${formattedHours}:${formattedMinutes}`;
+    };
     const handleAssign = (blockId)=>{
-        const taskId = prompt("Enter Task ID to assign:");
-        if (!taskId) return;
         fetch(`/api/v1/time-blocks/${blockId}/assign`, {
-            method: "POST",
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                task_id: parseInt(taskId)
+                task_id: props.selectedTaskId
             })
-        }).then((res)=>res.json()).then((data)=>{
-            if (data.status === 200) {
-                alert("Success!");
-                onAssignSuccess();
-            } else alert("Error: " + data.message);
+        }).then((res)=>{
+            if (!res.ok) throw new Error("something went wrong: " + res.status);
+            return res.json();
+        }).then((data)=>{
+            alert("Success: Task assigned!");
+            props.onAssignSuccess();
+        }).catch((error)=>{
+            console.log(error);
+            alert("Error assigning task");
         });
     };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        style: {
+            borderLeft: "1px solid #ccc",
+            paddingLeft: "20px"
+        },
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
-                children: "Schedule"
+                children: [
+                    "Schedule (",
+                    props.date,
+                    ")"
+                ]
+            }, void 0, true, {
+                fileName: "src/Schedule.js",
+                lineNumber: 39,
+                columnNumber: 7
+            }, undefined),
+            props.blocks.length === 0 ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                children: "No blocks. (Check DB date!)"
             }, void 0, false, {
                 fileName: "src/Schedule.js",
-                lineNumber: 26,
-                columnNumber: 13
-            }, undefined),
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("ul", {
-                children: blocks.map((block)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
+                lineNumber: 43,
+                columnNumber: 9
+            }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("ul", {
+                style: {
+                    listStyle: "none",
+                    padding: 0
+                },
+                children: props.blocks.map((block)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
+                        style: {
+                            marginBottom: "10px",
+                            padding: "10px",
+                            border: "1px solid #eee",
+                            borderRadius: "4px"
+                        },
                         children: [
-                            block.start_min,
-                            "\u5206: ",
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
-                                children: block.task_title || "---"
-                            }, void 0, false, {
+                                children: [
+                                    formatTime(block.start_min),
+                                    " \u301C ",
+                                    formatTime(block.end_min),
+                                    ": "
+                                ]
+                            }, void 0, true, {
                                 fileName: "src/Schedule.js",
-                                lineNumber: 30,
-                                columnNumber: 45
+                                lineNumber: 49,
+                                columnNumber: 15
                             }, undefined),
-                            !block.task_id && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                                onClick: ()=>handleAssign(block.id),
-                                children: "Assign Task"
+                            block.task_title ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                style: {
+                                    color: "green",
+                                    fontWeight: "bold",
+                                    marginLeft: "10px"
+                                },
+                                children: block.task_title
                             }, void 0, false, {
                                 fileName: "src/Schedule.js",
-                                lineNumber: 32,
-                                columnNumber: 29
+                                lineNumber: 52,
+                                columnNumber: 17
+                            }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                style: {
+                                    marginLeft: "10px"
+                                },
+                                children: [
+                                    "(Free)",
+                                    props.selectedTaskId ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                        onClick: ()=>handleAssign(block.id),
+                                        style: {
+                                            marginLeft: "10px",
+                                            cursor: "pointer"
+                                        },
+                                        children: "Assign Selected"
+                                    }, void 0, false, {
+                                        fileName: "src/Schedule.js",
+                                        lineNumber: 59,
+                                        columnNumber: 21
+                                    }, undefined) : ""
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Schedule.js",
+                                lineNumber: 54,
+                                columnNumber: 17
                             }, undefined)
                         ]
                     }, block.id, true, {
                         fileName: "src/Schedule.js",
-                        lineNumber: 29,
-                        columnNumber: 21
+                        lineNumber: 47,
+                        columnNumber: 13
                     }, undefined))
             }, void 0, false, {
                 fileName: "src/Schedule.js",
-                lineNumber: 27,
-                columnNumber: 13
+                lineNumber: 45,
+                columnNumber: 9
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/Schedule.js",
-        lineNumber: 25,
-        columnNumber: 9
+        lineNumber: 38,
+        columnNumber: 5
     }, undefined);
 };
 exports.default = Schedule;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const TaskForm = ({ onTaskAdded }) => {
+const TaskForm = props => {
     const [title, setTitle] = useState("");
     const [estMinutes, setEstMinutes] = useState(30);
     const [priority, setPriority] = useState(2);
@@ -16,23 +16,38 @@ const TaskForm = ({ onTaskAdded }) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newTask)
         })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok && res.status !== 422) {
+                throw new Error("something went wrong: " + res.status);
+            }
+            return res.json();
+        })
         .then(data => {
             if (data.status === 201) {
                 setMessage("Success: Task created!");
                 setTitle("");
-                onTaskAdded();
+                props.onTaskAdded();
             } else {
-                setMessage("Error: " + (data.errors ? data.errors.message : "Failed"));
+                let errMsg = "Failed";
+                if (data.errors && data.errors.length > 0) {
+                    errMsg = data.errors.message;
+                }
+                setMessage("Error: " + errMsg);
             }
         })
-        .catch(err => setMessage("Error connecting to API"));
+        .catch(err => {
+            console.log(err);
+            setMessage("Error connecting to API");
+        });
     };
 
     return (
         <form onSubmit={handleSubmit} style={{ border: "1px solid #ccc", padding: "15px", marginTop: "20px" }}>
             <h3>Add New Task</h3>
-            {message && <p><strong>{message}</strong></p>}
+            
+            {}
+            {message ? <p><strong>{message}</strong></p> : ""}
+            
             <div>
                 <label>Title: </label>
                 <input 
