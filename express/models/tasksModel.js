@@ -5,6 +5,11 @@ export const findAllTasks = (limit = 10, offset = 0) => {
     return db.prepare(sql).all(limit, offset);
 };
 
+export const findTaskById = (id) => {
+    const sql = "SELECT * FROM tasks WHERE id = ?;";
+    return db.prepare(sql).get(id);
+};
+
 export const createTask = (title, est_minutes, priority) => {
     const sql = `
         INSERT INTO tasks (title, est_minutes, priority, status) 

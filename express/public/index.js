@@ -16882,9 +16882,15 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _taskForm = require("./TaskForm");
 var _taskFormDefault = parcelHelpers.interopDefault(_taskForm);
+var _taskList = require("./TaskList");
+var _taskListDefault = parcelHelpers.interopDefault(_taskList);
+var _schedule = require("./Schedule");
+var _scheduleDefault = parcelHelpers.interopDefault(_schedule);
 const App = ()=>{
     const [tasks, setTasks] = (0, _react.useState)([]);
+    const [blocks, setBlocks] = (0, _react.useState)([]);
     const [loading, setLoading] = (0, _react.useState)(true);
+    const [date, setDate] = (0, _react.useState)("2026-04-07");
     const fetchTasks = ()=>{
         setLoading(true);
         fetch("/api/v1/tasks").then((res)=>res.json()).then((data)=>{
@@ -16892,9 +16898,18 @@ const App = ()=>{
             setLoading(false);
         });
     };
+    const fetchSchedule = ()=>{
+        fetch(`/api/v1/time-blocks?date=${date}`).then((res)=>res.json()).then((data)=>{
+            setBlocks(data.time_blocks || []);
+            setLoading(false);
+        });
+    };
     (0, _react.useEffect)(()=>{
         fetchTasks();
-    }, []);
+        fetchSchedule();
+    }, [
+        date
+    ]);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         style: {
             padding: "20px"
@@ -16904,64 +16919,72 @@ const App = ()=>{
                 children: "TimeBlock Tasks"
             }, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 24,
+                lineNumber: 38,
                 columnNumber: 13
             }, undefined),
-            loading ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                children: "Loading tasks..."
-            }, void 0, false, {
-                fileName: "src/App.js",
-                lineNumber: 25,
-                columnNumber: 24
-            }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("ul", {
-                children: tasks.map((task)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                style: {
+                    display: "flex",
+                    gap: "40px"
+                },
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        style: {
+                            flex: 1
+                        },
                         children: [
-                            " ",
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
-                                children: task.title
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
+                                children: "My Tasks"
                             }, void 0, false, {
                                 fileName: "src/App.js",
-                                lineNumber: 29,
-                                columnNumber: 29
+                                lineNumber: 42,
+                                columnNumber: 21
                             }, undefined),
-                            " - ",
-                            task.est_minutes,
-                            " min (",
-                            task.status,
-                            ")"
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _taskListDefault.default), {
+                                tasks: tasks,
+                                onTaskSelect: (id)=>console.log(id)
+                            }, void 0, false, {
+                                fileName: "src/App.js",
+                                lineNumber: 43,
+                                columnNumber: 21
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _taskFormDefault.default), {
+                                onTaskAdded: fetchTasks
+                            }, void 0, false, {
+                                fileName: "src/App.js",
+                                lineNumber: 44,
+                                columnNumber: 21
+                            }, undefined)
                         ]
-                    }, task.id, true, {
+                    }, void 0, true, {
                         fileName: "src/App.js",
-                        lineNumber: 28,
-                        columnNumber: 25
-                    }, undefined))
-            }, void 0, false, {
+                        lineNumber: 41,
+                        columnNumber: 17
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _scheduleDefault.default), {
+                        blocks: blocks,
+                        date: date
+                    }, void 0, false, {
+                        fileName: "src/App.js",
+                        lineNumber: 48,
+                        columnNumber: 17
+                    }, undefined)
+                ]
+            }, void 0, true, {
                 fileName: "src/App.js",
-                lineNumber: 26,
-                columnNumber: 17
-            }, undefined),
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("hr", {}, void 0, false, {
-                fileName: "src/App.js",
-                lineNumber: 34,
-                columnNumber: 13
-            }, undefined),
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _taskFormDefault.default), {
-                onTaskAdded: fetchTasks
-            }, void 0, false, {
-                fileName: "src/App.js",
-                lineNumber: 35,
+                lineNumber: 39,
                 columnNumber: 13
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/App.js",
-        lineNumber: 23,
+        lineNumber: 37,
         columnNumber: 9
     }, undefined);
 };
 exports.default = App;
 
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"iGxv9","./TaskForm":"hmPcD"}],"iGxv9":[function(require,module,exports,__globalThis) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"iGxv9","./TaskForm":"hmPcD","./TaskList":"ey9KV","./Schedule":"4gKGH"}],"iGxv9":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -17165,6 +17188,119 @@ const TaskForm = ({ onTaskAdded })=>{
     }, undefined);
 };
 exports.default = TaskForm;
+
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"iGxv9"}],"ey9KV":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxDevRuntime = require("react/jsx-dev-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+const TaskList = ({ tasks, onTaskSelect })=>{
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("ul", {
+        children: tasks.map((task)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
+                        children: task.title
+                    }, void 0, false, {
+                        fileName: "src/TaskList.js",
+                        lineNumber: 8,
+                        columnNumber: 21
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                        onClick: ()=>onTaskSelect(task.id),
+                        children: "View Details"
+                    }, void 0, false, {
+                        fileName: "src/TaskList.js",
+                        lineNumber: 10,
+                        columnNumber: 21
+                    }, undefined)
+                ]
+            }, task.id, true, {
+                fileName: "src/TaskList.js",
+                lineNumber: 7,
+                columnNumber: 17
+            }, undefined))
+    }, void 0, false, {
+        fileName: "src/TaskList.js",
+        lineNumber: 5,
+        columnNumber: 9
+    }, undefined);
+};
+exports.default = TaskList;
+
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"iGxv9"}],"4gKGH":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxDevRuntime = require("react/jsx-dev-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+const Schedule = ({ blocks, tasks, onAssignSuccess })=>{
+    const handleAssign = (blockId)=>{
+        const taskId = prompt("Enter Task ID to assign:");
+        if (!taskId) return;
+        fetch(`/api/v1/time-blocks/${blockId}/assign`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                task_id: parseInt(taskId)
+            })
+        }).then((res)=>res.json()).then((data)=>{
+            if (data.status === 200) {
+                alert("Success!");
+                onAssignSuccess();
+            } else alert("Error: " + data.message);
+        });
+    };
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
+                children: "Schedule"
+            }, void 0, false, {
+                fileName: "src/Schedule.js",
+                lineNumber: 26,
+                columnNumber: 13
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("ul", {
+                children: blocks.map((block)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
+                        children: [
+                            block.start_min,
+                            "\u5206: ",
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
+                                children: block.task_title || "---"
+                            }, void 0, false, {
+                                fileName: "src/Schedule.js",
+                                lineNumber: 30,
+                                columnNumber: 45
+                            }, undefined),
+                            !block.task_id && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                onClick: ()=>handleAssign(block.id),
+                                children: "Assign Task"
+                            }, void 0, false, {
+                                fileName: "src/Schedule.js",
+                                lineNumber: 32,
+                                columnNumber: 29
+                            }, undefined)
+                        ]
+                    }, block.id, true, {
+                        fileName: "src/Schedule.js",
+                        lineNumber: 29,
+                        columnNumber: 21
+                    }, undefined))
+            }, void 0, false, {
+                fileName: "src/Schedule.js",
+                lineNumber: 27,
+                columnNumber: 13
+            }, undefined)
+        ]
+    }, void 0, true, {
+        fileName: "src/Schedule.js",
+        lineNumber: 25,
+        columnNumber: 9
+    }, undefined);
+};
+exports.default = Schedule;
 
 },{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"iGxv9"}]},["8lqZg"], "8lqZg", "parcelRequire77dd", {})
 

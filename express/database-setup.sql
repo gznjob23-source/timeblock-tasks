@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS time_blocks;
+DROP TABLE IF EXISTS tasks;
+
 CREATE TABLE tasks (
     id INTEGER PRIMARY KEY,
     title TEXT NOT NULL,

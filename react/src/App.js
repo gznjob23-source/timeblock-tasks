@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import TaskForm from './TaskForm';
+import TaskList from './TaskList';
+import Schedule from './Schedule';
 
 const App = () => {
     const [tasks, setTasks] = useState([]);
+    const [blocks, setBlocks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [date, setDate] = useState("2026-04-07");
 
     const fetchTasks = () => {
         setLoading(true);
@@ -15,24 +19,34 @@ const App = () => {
             });
     };
 
+    const fetchSchedule = () => {
+        fetch(`/api/v1/time-blocks?date=${date}`)
+            .then(res => res.json())
+            .then(data => {
+                setBlocks(data.time_blocks || []);
+                setLoading(false);
+            });
+    };
+
     useEffect(() => {
         fetchTasks();
-    }, []);
+        fetchSchedule();
+    }, [date]);
 
     return (
         <div style={{ padding: "20px" }}>
             <h1>TimeBlock Tasks</h1>
-            {loading ? <p>Loading tasks...</p> : (
-                <ul>
-                    {tasks.map(task => (
-                        <li key={task.id}> {}
-                            <strong>{task.title}</strong> - {task.est_minutes} min ({task.status})
-                        </li>
-                    ))}
-                </ul>
-            )}
-            <hr />
-            <TaskForm onTaskAdded={fetchTasks} />
+            <div style={{ display: "flex", gap: "40px" }}>
+                {}
+                <div style={{ flex: 1 }}>
+                    <h2>My Tasks</h2>
+                    <TaskList tasks={tasks} onTaskSelect={(id) => console.log(id)} />
+                    <TaskForm onTaskAdded={fetchTasks} />
+                </div>
+
+                {}
+                <Schedule blocks={blocks} date={date} />
+            </div>
         </div>
     );
 };
