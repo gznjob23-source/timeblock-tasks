@@ -25,7 +25,6 @@ CREATE TABLE time_blocks (
     PRIMARY KEY (id),
     
     FOREIGN KEY (task_id) REFERENCES tasks(id),
-    
     CONSTRAINT time_order CHECK (start_min < end_min),
     CONSTRAINT start_range CHECK (start_min >= 0 AND start_min <= 1439)
 );
