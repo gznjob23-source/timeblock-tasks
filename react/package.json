@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "npx parcel watch --no-hmr src/index.js --dist-dir ../express/public"
+    "dev": "npx parcel watch src/index.js --dist-dir ../express/public",
+    "start": "npx parcel build src/index.js --dist-dir ../express/public"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
   }
 }
