@@ -38,7 +38,6 @@ const App = () => {
         return res.json();
       })
       .then(data => {
-        // データを取り出す
         let taskData = data.task || data;
         
         if (taskData.length > 0 && taskData !== undefined) {
